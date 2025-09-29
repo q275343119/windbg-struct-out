@@ -67,6 +67,19 @@ def append_to_command_py(func_code: str, file_path="command.py"):
         f.write(func_code)
         f.write("\n")
 
+def clean_code(code: str) -> str:
+    """
+    去掉前后的 Markdown ```python ``` 代码块
+    """
+    code = code.strip()
+    if code.startswith("```") and code.endswith("```"):
+        # 去掉前后 ```
+        code = code[3:-3].strip()
+        # 如果开头是 ```python，也去掉
+        if code.lower().startswith("python"):
+            code = code[6:].strip()
+    return code
+
 # ------------------------------
 # 主执行逻辑
 # ------------------------------
@@ -82,7 +95,10 @@ def main():
             func_name=case["func_name"],
             fields=fields_str
         )
-        append_to_command_py(code)
+
+        code_clean = clean_code(code)
+
+        append_to_command_py(code_clean)
         print(f"✅ 已生成函数 {case['func_name']} 并追加到 command.py")
 
 if __name__ == "__main__":
